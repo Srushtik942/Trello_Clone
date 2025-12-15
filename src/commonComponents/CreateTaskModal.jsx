@@ -12,13 +12,12 @@ const CreateTaskModal = ({ isOpen, onClose, onSuccess }) => {
     name: "",
     project: "",
     team: "",
-    owners: [], // ✅ array of user IDs
+    owners: [],
     tags: "",
     timeToComplete: "",
     status: "To Do",
   });
 
-  // ---------------- FETCH DATA ----------------
   useEffect(() => {
     if (!isOpen) return;
 
@@ -48,7 +47,6 @@ const CreateTaskModal = ({ isOpen, onClose, onSuccess }) => {
 
   if (!isOpen) return null;
 
-  // ---------------- INPUT HANDLER ----------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
@@ -57,9 +55,7 @@ const CreateTaskModal = ({ isOpen, onClose, onSuccess }) => {
     }));
   };
 
-  // ---------------- CREATE TASK ----------------
   const handleCreate = async () => {
-    // ✅ FIXED VALIDATION
     if (
       !form.name ||
       !form.project ||
@@ -85,7 +81,7 @@ const CreateTaskModal = ({ isOpen, onClose, onSuccess }) => {
           name: form.name,
           project: form.project,
           team: form.team,
-          owners: form.owners, // ✅ array
+          owners: form.owners,
           tags: tagsArray,
           timeToComplete: Number(form.timeToComplete),
           status: form.status,
@@ -119,7 +115,6 @@ const CreateTaskModal = ({ isOpen, onClose, onSuccess }) => {
     }
   };
 
-  // ---------------- UI ----------------
   return (
     <div
       className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"

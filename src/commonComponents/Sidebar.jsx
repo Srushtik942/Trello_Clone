@@ -15,7 +15,7 @@ const Sidebar = () => {
   const menuItems = [
     { path: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { path: "/moodBoard", label: "Project", icon: <FolderKanban size={18} /> },
-    { path: "/team", label: "Team", icon: <Users size={18} /> },
+    { path: "/teams", label: "Team", icon: <Users size={18} /> },
     { path: "/reports", label: "Reports", icon: <BarChart3 size={18} /> },
     { path: "/settings", label: "Setting", icon: <Settings size={18} /> },
   ];

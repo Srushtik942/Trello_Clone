@@ -1,30 +1,38 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../commonComponents/Sidebar";
+import CreateTaskModal from "../commonComponents/CreateTaskModal";
+import TaskCard from "../commonComponents/TaskCard";
 import toast from "react-hot-toast";
 
 const CreateMoodBoard = () => {
 
     const [tasks, setTasks] = useState([]);
+    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+    const [refreshTasks, setRefreshTasks] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState("To Do");
+
     const apiUrl = import.meta.env.VITE_API_URL;
 
+    useEffect(() => {
+  const fetchTasks = async () => {
+    try {
+      const url = selectedStatus
+        ? `${apiUrl}/tasks?status=${encodeURIComponent(selectedStatus)}`
+        : `${apiUrl}/tasks`;
 
-    useEffect(()=>{
-        const fetchTasks = async()=>{
-            try{
-                const response = await fetch(`${apiUrl}/tasks`,{
-                    method: "GET"
-                });
-                console.log(response);
-                const data = await response.json();
+      const response = await fetch(url);
+      const data = await response.json();
 
-                setTasks(data?.tasks || []);
+      setTasks(data?.tasks || []);
+    } catch (error) {
+      toast.error("Internal Server Error");
+    }
+  };
 
-            }catch(error){
-                toast.error("Internal Server Error")
-            }
-        }
-        fetchTasks();
-    },[])
+  fetchTasks();
+}, [selectedStatus, refreshTasks]);
+
+
 
   return (
     <div className="flex h-screen bg-white">
@@ -39,31 +47,34 @@ const CreateMoodBoard = () => {
         {/* Sort & Actions */}
         <div className="flex items-center justify-between mb-5 mt-2">
           {/* Sort buttons */}
-          <div className="flex gap-2">
-            {[
-              "Priority Low-High",
-              "Priority High-Low",
-              "Newest First",
-              "Oldest First",
-            ].map((item) => (
+         <div className="flex gap-2">
+          {["To Do", "In Progress", "Completed", "Blocked"].map((status) => (
               <button
-                key={item}
-                className="px-4 py-1.5 border rounded-full text-sm text-gray-600 hover:bg-gray-100"
-              >
-                {item}
-              </button>
-            ))}
-          </div>
+                key={status}
+                onClick={() => setSelectedStatus(status)}
+                className={`px-4 py-1.5 border rounded-full text-sm cursor-pointer
+              ${
+                selectedStatus === status
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "text-gray-600 hover:bg-gray-100"
+               }
+                 `}
+             >
+            {status}
+         </button>
+         ))}
+     </div>
+
 
           {/* Right buttons */}
           <div className="flex gap-3">
-            <button className="px-4 py-2 border rounded-md text-gray-600">
-              Filter
-            </button>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md">
+            <button
+            onClick={() => setIsTaskModalOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md">
               + New Task
             </button>
           </div>
+
         </div>
 
         {/* Table */}
@@ -73,7 +84,6 @@ const CreateMoodBoard = () => {
               <tr>
                 <th className="text-left p-3">TASKS</th>
                 <th className="text-left p-3">OWNER</th>
-                {/* <th className="text-left p-3">PRIORITY</th> */}
                 <th className="text-left p-3">Due Days</th>
                 <th className="text-left p-3">STATUS</th>
                 <th className="p-3"></th>
@@ -112,8 +122,6 @@ const CreateMoodBoard = () => {
                         {task.status}
                       </span>
                     </td>
-
-                    {/* <td className="p-3 text-right cursor-pointer">→</td> */}
                   </tr>
                 ))
               )}
@@ -121,6 +129,13 @@ const CreateMoodBoard = () => {
           </table>
         </div>
       </div>
+       {isTaskModalOpen && (
+              <CreateTaskModal
+                isOpen={isTaskModalOpen}
+                onClose={() => setIsTaskModalOpen(false)}
+                onSuccess={() => setRefreshTasks((prev) => !prev)}
+              />
+        )}
     </div>
   );
 };
