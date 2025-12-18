@@ -44,7 +44,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white">
       <div className="bg-gray-900 p-10 rounded-xl shadow-lg w-full max-w-md">
-       <h3 className="text-4xl font-bold mb-4 text-center text-blue-500">Workasna</h3>
+       <h3 className="text-4xl font-bold mb-4 text-center text-blue-500">Workly</h3>
         <h1 className="text-2xl font-bold mb-8 text-center">Login to your account</h1>
 
         {/* Form */}

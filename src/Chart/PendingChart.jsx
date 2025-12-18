@@ -64,7 +64,7 @@ export default function TotalPendingDaysCard() {
         {pendingTasks.slice(0, 6).map((task, index) => (
           <span
             key={index}
-            className={`text-xs font-medium px-3 py-1 rounded-full cursor-pointer ${
+            className={`text-xs font-medium px-3 py-1 rounded-full cursor-pointer  ${
               bgColors[index % bgColors.length]
             }`}
           >

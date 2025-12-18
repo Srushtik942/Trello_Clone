@@ -1,86 +1,113 @@
-import React, { useEffect,useState } from "react";
-import { Eye } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../commonComponents/Sidebar";
+import MobileHeader from "../commonComponents/MobileHeader";
 import toast from "react-hot-toast";
 import CreateNewTeam from "./CreateNewTeam";
 
 const Team = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-   const [isModalOpen, setIsModalOpen] = useState(false);
-   const [teams, setTeams] = useState([]);
-    const apiUrl = import.meta.env.VITE_API_URL;
+  const apiUrl = import.meta.env.VITE_API_URL;
 
-    const fetchTeams = async()=>{
-        try{
-            const response = await fetch(`${apiUrl}/team`);
-            console.log(response);
-
-            const data = await response.json();
-            setTeams(data.response);
-
-            // toast.success("Data fetchd successfully!");
-
-        }catch(error){
-            toast.error("Failed to fetch team data!");
-        }
+  const fetchTeams = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/team`);
+      const data = await response.json();
+      setTeams(data.response || []);
+    } catch (error) {
+      toast.error("Failed to fetch team data!");
     }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchTeams();
-  },[]);
-
+  }, []);
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
+    <>
+      <div className="flex min-h-screen bg-gradient-to-r from-gray-100 to-gray-50">
 
-      <div className="flex-1 p-10">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="font-bold text-2xl text-black">Teams</h1>
-          <button
-          onClick={()=>setIsModalOpen(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg">
-            + New Team
-          </button>
-          <CreateNewTeam
-          isOpen={isModalOpen}
-          onClose={()=> setIsModalOpen(false)}
-          onSuccess={fetchTeams}
-          />
+        {/* ================= Desktop Sidebar ================= */}
+        <div className="hidden md:block w-64 bg-white border-r shadow-lg">
+          <Sidebar />
         </div>
 
-        {/* Team Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {teams.map((team) => (
+        {/* ================= Mobile Sidebar ================= */}
+        {sidebarOpen && (
+          <div className="fixed inset-0 z-50 md:hidden">
+            {/* Overlay */}
             <div
-              key={team._id}
-              className="bg-white rounded-xl shadow-sm border p-5 hover:shadow-md transition"
-            >
-              <h2 className="text-lg font-semibold text-gray-800">
-                {team.name}
-              </h2>
+              className="absolute inset-0 bg-black/40 transition-opacity"
+              onClick={() => setSidebarOpen(false)}
+            />
 
-              <p className="text-sm text-gray-500 mt-1">
-                {team.description}
-              </p>
-
-              <div className="mt-4 flex justify-between items-center">
-
-
-                <Link
-                 to={`/teams/${team._id}/owners`}
-                className="text-blue-600 text-sm font-medium hover:underline cursor-pointer">
-                    View
-                </Link>
-              </div>
+            {/* Sidebar */}
+            <div className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl transform transition-transform duration-300">
+              <Sidebar isMobile onClose={() => setSidebarOpen(false)} />
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
+        {/* ================= Main Content ================= */}
+        <div className="flex-1 overflow-y-auto">
+          <MobileHeader onMenuClick={() => setSidebarOpen(prev => !prev)} />
+
+          <div className="p-6 lg:p-10">
+
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <h1 className="font-bold text-3xl text-gray-900">Teams</h1>
+
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-indigo-500 hover:to-blue-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transform hover:scale-105 transition duration-300"
+              >
+                + New Team
+              </button>
+            </div>
+
+            {/* Team Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {teams.map((team) => (
+                <div
+                  key={team._id}
+                  className="bg-white rounded-2xl shadow-md border p-6 hover:shadow-xl hover:scale-105 transition-transform duration-300 group"
+                >
+                  <h2 className="text-xl font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                    {team.name}
+                  </h2>
+
+                  <p className="text-sm text-gray-500 mt-2 line-clamp-3">
+                    {team.description}
+                  </p>
+
+                  <div className="mt-4 flex justify-between items-center">
+                    <Link
+                      to={`/teams/${team._id}/owners`}
+                      className="text-blue-600 font-medium text-sm hover:underline"
+                    >
+                      View Members
+                    </Link>
+
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      {isModalOpen && (
+        <CreateNewTeam
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={fetchTeams}
+        />
+      )}
+    </>
   );
 };
 

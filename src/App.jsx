@@ -8,6 +8,8 @@ import CreateMoodBoard from './components/CreateMoodBoard';
 import Team from './commonComponents/Team';
 import Members from './commonComponents/Members';
 import Report from './commonComponents/Report';
+import ProjectPage from './components/ProjectPage';
+import ProjectDetails from './components/ProjectDetails'
 
 function App() {
   const isLoggedIn = () =>{
@@ -25,6 +27,9 @@ function App() {
       <Route path="/teams"element={<Team/>}/>
       <Route path="/teams/:teamId/owners" element={<Members />} />
       <Route path='/reports' element={<Report/>}/>
+      <Route path="/projects" element={<ProjectPage/>}/>
+      <Route path="/projectDetails/:id" element={<ProjectDetails />} />
+
 
  {/* Protected Route */}
         <Route
