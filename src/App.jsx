@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import Login from "./components/Login";
-import Signup from "./components/SIgnup";
+import Signup from "./components/Signup";
 import Dashboard from "./components/Dashboard";
 import CreateMoodBoard from "./components/CreateMoodBoard";
 import Team from "./commonComponents/Team";
