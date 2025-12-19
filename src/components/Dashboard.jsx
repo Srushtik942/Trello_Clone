@@ -68,12 +68,12 @@ const Dashboard = () => {
     <>
       <div className="flex min-h-screen bg-gray-100">
 
-        {/* ================= Desktop Sidebar ================= */}
+        {/* Desktop Sidebar  */}
         <div className="hidden md:block w-64 bg-white shadow-lg">
           <Sidebar />
         </div>
 
-        {/* ================= Mobile Sidebar ================= */}
+        {/* Mobile Sidebar */}
         {sidebarOpen && (
           <div className="fixed inset-0 z-50 md:hidden">
             {/* Overlay */}
